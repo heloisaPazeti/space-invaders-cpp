@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Player.h"
 #include "Renderer.h"
+#include "Texture.h"
 
 // Owns every game object and runs the main loop.
 class Game {
@@ -17,10 +18,11 @@ private:
     void update(double deltaTime);
     void render();
 
-    // NOTE: member order matters. Members are destroyed in reverse order,
-    // so SdlContext (declared first) is destroyed last, as it must be.
+    // NOTE: member order matters. Members are destroyed in reverse order:
+    // textures must die before the renderer, and SDL itself must die last.
     SdlContext sdl_;
     Renderer   renderer_;
+    Texture    spriteSheet_;
     Input      input_;
     Player     player_;
 

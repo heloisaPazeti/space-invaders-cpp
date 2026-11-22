@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 
+class Texture;
+
 // RAII wrapper for SDL_Init / SDL_Quit and IMG_Init / IMG_Quit.
 // Must be created BEFORE anything else that uses SDL, and therefore destroyed last.
 class SdlContext {
@@ -32,6 +34,9 @@ public:
     // Draw a solid colored rectangle (handy for placeholders and debugging).
     void fillRect(float x, float y, float width, float height,
                   std::uint8_t r, std::uint8_t g, std::uint8_t b);
+
+    // Draw a region (source) of a texture with its top-left corner at (x, y).
+    void drawTexture(const Texture& texture, const SDL_Rect& source, float x, float y);
 
     // Raw SDL renderer, needed later to create textures.
     SDL_Renderer* native() const { return renderer_; }

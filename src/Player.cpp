@@ -5,9 +5,16 @@
 #include "Config.h"
 #include "Input.h"
 #include "Renderer.h"
+#include "Sprites.h"
+#include "Texture.h"
+
+namespace {
+// The sprite size defines the player's size on screen.
+constexpr float kWidth = static_cast<float>(Sprites::kPlayer.w);
+}  // namespace
 
 Player::Player()
-    : x_((Config::kLogicalWidth - Config::kPlayerWidth) / 2.0f),
+    : x_((Config::kLogicalWidth - kWidth) / 2.0f),
       y_(Config::kPlayerStartY) {}
 
 void Player::update(double deltaTime, const Input& input) {
@@ -17,15 +24,13 @@ void Player::update(double deltaTime, const Input& input) {
     if (input.isHeld(SDL_SCANCODE_LEFT)  || input.isHeld(SDL_SCANCODE_A)) direction -= 1.0f;
     if (input.isHeld(SDL_SCANCODE_RIGHT) || input.isHeld(SDL_SCANCODE_D)) direction += 1.0f;
 
-    // distance = speed * time. Multiplying by deltaTime keeps the speed
-    // independent of the update rate.
+    // distance = speed * time.
     x_ += direction * Config::kPlayerSpeed * static_cast<float>(deltaTime);
 
     // Keep the cannon inside the screen.
-    const float maxX = Config::kLogicalWidth - Config::kPlayerWidth;
-    x_ = std::clamp(x_, 0.0f, maxX);
+    x_ = std::clamp(x_, 0.0f, Config::kLogicalWidth - kWidth);
 }
 
-void Player::render(Renderer& renderer) const {
-    renderer.fillRect(x_, y_, Config::kPlayerWidth, Config::kPlayerHeight, 0, 255, 0);
+void Player::render(Renderer& renderer, const Texture& spriteSheet) const {
+    renderer.drawTexture(spriteSheet, Sprites::kPlayer, x_, y_);
 }

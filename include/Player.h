@@ -2,15 +2,15 @@
 
 class Input;
 class Renderer;
+class Texture;
 
 // The player's cannon at the bottom of the screen.
-// TODO:  For now it is drawn as a green rectangle; sprites come in a later step.
 class Player {
 public:
     Player();
 
     void update(double deltaTime, const Input& input);
-    void render(Renderer& renderer) const;
+    void render(Renderer& renderer, const Texture& spriteSheet) const;
 
 private:
     float x_;

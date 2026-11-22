@@ -2,12 +2,28 @@
 
 #include <algorithm>
 #include <chrono>
+#include <string>
 
 #include "Config.h"
 
+namespace {
+
+// Builds the full path of an asset. The path is relative to the executable
+// (not to the current working directory), so the game works no matter where
+// you launch it from.
+std::string assetPath(const std::string& fileName) {
+    char* basePath = SDL_GetBasePath();  // Ends with a path separator
+    std::string result = (basePath != nullptr) ? basePath : "./";
+    SDL_free(basePath);
+    return result + "assets/" + fileName;
+}
+
+}  // namespace
+
 Game::Game()
     : renderer_("Space Invaders",
-                Config::kLogicalWidth, Config::kLogicalHeight, Config::kWindowScale) {}
+                Config::kLogicalWidth, Config::kLogicalHeight, Config::kWindowScale),
+      spriteSheet_(renderer_.native(), assetPath("SpaceInvaders.png")) {}
 
 void Game::run() {
     using Clock = std::chrono::steady_clock;
@@ -62,6 +78,6 @@ void Game::update(double deltaTime) {
 
 void Game::render() {
     renderer_.clear();
-    player_.render(renderer_);
+    player_.render(renderer_, spriteSheet_);
     renderer_.present();
 }

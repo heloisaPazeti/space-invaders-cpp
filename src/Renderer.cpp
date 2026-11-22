@@ -1,8 +1,11 @@
 #include "Renderer.h"
+#include "Texture.h"
 
 #include <SDL_image.h>
 
 #include <stdexcept>
+
+#include <cmath>
 
 // --- SdlContext --------------------------------------------------------------
 
@@ -66,4 +69,12 @@ void Renderer::fillRect(float x, float y, float width, float height,
     SDL_SetRenderDrawColor(renderer_, r, g, b, 255);
     const SDL_FRect rect{x, y, width, height};
     SDL_RenderFillRectF(renderer_, &rect);
+}
+
+void Renderer::drawTexture(const Texture& texture, const SDL_Rect& source, float x, float y) {
+    // Round to whole pixels: drawing pixel art at fractional positions makes
+    // columns of pixels look uneven or shimmer while the sprite moves.
+    const SDL_FRect destination{std::round(x), std::round(y),
+                                static_cast<float>(source.w), static_cast<float>(source.h)};
+    SDL_RenderCopyF(renderer_, texture.native(), &source, &destination);
 }

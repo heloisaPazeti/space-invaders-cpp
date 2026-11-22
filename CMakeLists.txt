@@ -31,8 +31,13 @@ endif()
 # Copy the assets folder next to the executable after every build,
 # so the game can load "assets/..." using relative paths.
 if(EXISTS ${CMAKE_SOURCE_DIR}/assets)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    # Copy the assets folder next to the executable on every build.
+    # (A custom target with ALL runs each time, so newly added files are picked up.)
+    # Note: using $<TARGET_FILE_DIR:...> already makes this target depend on the
+    # executable, so no add_dependencies() is needed (it would create a cycle).
+    add_custom_target(copy_assets ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_SOURCE_DIR}/assets
-                $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
+                $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+        COMMENT "Copying assets")
 endif()

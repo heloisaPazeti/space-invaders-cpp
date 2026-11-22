@@ -16,8 +16,6 @@ constexpr double kMaxFrameTime  = 0.25;        // Clamp to avoid the "spiral of 
 
 // --- Player ----------------------------------------------------------------
 constexpr float kPlayerSpeed  = 100.0f;  // Pixels per second
-constexpr float kPlayerWidth  = 13.0f;
-constexpr float kPlayerHeight = 8.0f;
 constexpr float kPlayerStartY = 220.0f;
 
 }  // namespace Config
