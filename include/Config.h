@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 // Central place for every tweakable game constant.
 namespace Config {
 
@@ -17,6 +19,10 @@ constexpr double kMaxFrameTime  = 0.25;        // Clamp to avoid the "spiral of 
 // --- Player ----------------------------------------------------------------
 constexpr float kPlayerSpeed  = 100.0f;  // Pixels per second
 constexpr float kPlayerStartY = 220.0f;
+
+// --- Bullets ---------------------------------------------------------------
+constexpr float       kPlayerBulletSpeed = 220.0f;  // Pixels per second
+constexpr std::size_t kMaxPlayerBullets  = 1;       // Classic rule: one shot at a time
 
 }  // namespace Config
 

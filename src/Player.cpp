@@ -34,3 +34,11 @@ void Player::update(double deltaTime, const Input& input) {
 void Player::render(Renderer& renderer, const Texture& spriteSheet) const {
     renderer.drawTexture(spriteSheet, Sprites::kPlayer, x_, y_);
 }
+
+float Player::centerX() const {
+    return x_ + kWidth / 2.0f;
+}
+
+float Player::top() const {
+    return y_;
+}

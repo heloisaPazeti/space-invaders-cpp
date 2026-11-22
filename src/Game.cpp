@@ -1,10 +1,12 @@
+
 #include "Game.h"
+#include "Config.h"
+#include "Sprites.h"
 
 #include <algorithm>
 #include <chrono>
 #include <string>
 
-#include "Config.h"
 
 namespace {
 
@@ -74,10 +76,44 @@ void Game::processEvents() {
 
 void Game::update(double deltaTime) {
     player_.update(deltaTime, input_);
+
+    // Space fires, but only if the player has not used up all its bullets.
+    // wasPressed() is true for a single update, so holding the key down
+    // does not fire a stream of bullets.
+    if (input_.wasPressed(SDL_SCANCODE_SPACE) &&
+        playerBullets_.size() < Config::kMaxPlayerBullets) {
+        spawnPlayerBullet();
+    }
+
+    for (Bullet& bullet : playerBullets_) {
+        bullet.update(deltaTime);
+    }
+
+    // Remove bullets that left the screen. We do this AFTER the loop above:
+    // erasing from a vector while iterating over it invalidates iterators.
+    std::erase_if(playerBullets_, [](const Bullet& bullet) {
+        return bullet.isOffscreen();
+    });
+}
+
+void Game::spawnPlayerBullet() {
+    const SDL_Rect& sprite = Sprites::kPlayerBullet;
+
+    // Center the bullet horizontally on the cannon, and place it just above it.
+    const float x = player_.centerX() - static_cast<float>(sprite.w) / 2.0f;
+    const float y = player_.top() - static_cast<float>(sprite.h);
+
+    // Negative velocity = moving up the screen.
+    playerBullets_.emplace_back(x, y, -Config::kPlayerBulletSpeed, sprite);
 }
 
 void Game::render() {
     renderer_.clear();
+
     player_.render(renderer_, spriteSheet_);
+    for (const Bullet& bullet : playerBullets_) {
+        bullet.render(renderer_, spriteSheet_);
+    }
+
     renderer_.present();
 }
